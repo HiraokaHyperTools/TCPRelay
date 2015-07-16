@@ -25,7 +25,14 @@ namespace TCPRelay {
         Socket s1;
 
         private void Run() {
-            s1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            if (e1.AddressFamily == AddressFamily.InterNetworkV6) {
+                // http://blogs.msdn.com/b/malarch/archive/2005/11/18/494769.aspx
+                s1 = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
+                s1.SetSocketOption(SocketOptionLevel.IPv6, (SocketOptionName)27, 0);
+            }
+            else {
+                s1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            }
             s1.Bind(e1);
             s1.Listen(3);
             while (true) {
